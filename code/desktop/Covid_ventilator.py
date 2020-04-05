@@ -27,7 +27,7 @@ def get_port():
     ports = serial.tools.list_ports.comports()
     for i in ports:
         i = str(i)
-        if 'AMA' in i:     
+        if 'ACM' in i:     
             return (i.split()[0])
             
 def open_serial():
