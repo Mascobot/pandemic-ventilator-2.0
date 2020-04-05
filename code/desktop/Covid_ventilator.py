@@ -17,7 +17,6 @@ dict_data = {'PressureA':0, 'ERP1':0, 'ERP2':0, 'PressureB':0, 'PressureC':0, 'F
 indicator = 0
 slider_volume = 0
 slider_bpm = 12
-slider_peep = 5
 slider_o = 21
 slider_ratio = 1
 slider_alarm = 30
@@ -205,21 +204,17 @@ class Application(tk.Tk):
         self.slider_bpm.set(12)
         self.slider_bpm.grid(row = 35, column = 5,)
 
-        self.slider_peep = tk.Scale(self, from_=20, to=5,length=300, resolution =1, troughcolor='blue', fg='red', label='PEEP (cmH2O)', width=35)
-        self.slider_peep.set(5)
-        self.slider_peep.grid(row = 35, column = 6,)
-
         self.slider_o = tk.Scale(self, from_=100, to=1,length=300, resolution =1, troughcolor='blue', fg='red', label='Oxygen (%)', width=35)
         self.slider_o.set(21)
-        self.slider_o.grid(row = 35, column = 7,)
+        self.slider_o.grid(row = 35, column = 6,)   
 
         self.slider_ratio = tk.Scale(self, from_=3, to=1,length=300, resolution = 1, troughcolor='blue', fg='red', label='I:E Ratio', width=35)
         self.slider_ratio.set(1)
-        self.slider_ratio.grid(row = 35, column = 8,)
+        self.slider_ratio.grid(row = 35, column = 7,)
 
         self.slider_alarm = tk.Scale(self, from_=50, to=10,length=300, resolution =  1, troughcolor='blue', fg='red', label='Presure Alarm', width=35)
         self.slider_alarm.set(30)
-        self.slider_alarm.grid(row = 35, column = 9,)     
+        self.slider_alarm.grid(row = 35, column = 8,)     
 
         self.send_button = tk.Button(self, text ="Start with selected parameters", command = self.send_data, height = 2, width = 25, fg='black') 
         self.send_button.grid(row = 37, column = 6)
@@ -228,7 +223,7 @@ class Application(tk.Tk):
         self.t2.start()
     
     def send_data(self):
-        global slider_volume, slider_bpm, slider_peep, slider_o, slider_ratio, slider_alarm
+        global slider_volume, slider_bpm, slider_o, slider_ratio, slider_alarm
         senf = 20
         serial = open_serial()
         for i in range(senf):
@@ -244,11 +239,6 @@ class Application(tk.Tk):
                 play_changed_data(change='bpm', value=str(self.slider_bpm.get()))
                 slider_bpm = self.slider_bpm.get()
             
-            if slider_peep != self.slider_peep.get():
-                dat_to_ar = 'p' + str(self.slider_peep.get()) + "\n"
-                serial.write(dat_to_ar.encode())
-                play_changed_data(change='peep', value=str(self.slider_peep.get()), unit='cmh2o')
-                slider_peep = self.slider_peep.get()
             
             if slider_o != self.slider_o.get():
                 dat_to_ar = 'o' + str(self.slider_o.get()) + "\n"
@@ -283,11 +273,11 @@ class Application(tk.Tk):
             self.gauge_tank.set_value(int(dict_data['PressureA']))
             if int(dict_data['PressureA']) > 0 and tank_in == 0:
                 #play_changed_data(change='tankpressure', value=dict_data['PressureA'])
-                send_sms(sms_body='Almost no pressure on Tank of ventilator number 2: ' + str(dict_data['PressureA']) + 'PSI.')
+                #send_sms(sms_body='Almost no pressure on Tank of ventilator number 2: ' + str(dict_data['PressureA']) + 'PSI.')
                 tank_in = 1
             elif 20 < int(dict_data['PressureA']) < 35 and tank_in == 1:
                 #play_changed_data(change='tankpressure', value= dict_data['PressureA'])
-                send_sms(sms_body='Low pressure on Tank: ' + str(dict_data['PressureA']) + 'PSI')
+                #send_sms(sms_body='Low pressure on Tank: ' + str(dict_data['PressureA']) + 'PSI')
                 tank_in = 2
             elif 40 < int(dict_data['PressureA']) < 55 and tank_in == 2:
                 #play_changed_data(change='tankpressure', value= dict_data['PressureA'])
